@@ -1,5 +1,5 @@
-import { Suspense } from "react";
-import { getContacts } from "./api";
+import { Suspense, useState } from "react"
+import { getContacts } from "./api"
 
 function App() {
   return (
@@ -9,23 +9,50 @@ function App() {
         <ContactList />
       </Suspense>
     </>
-  );
+  )
 }
 
 function ContactList() {
-  const contacts = getContacts();
+  const contacts = getContacts()
 
   return (
     <ul>
-      {contacts.map((contact) => (
-        <li key={contact.id}>
-          <div style={{ color: "blue" }}>
-            {contact.name} | {contact.email}
-          </div>
+      {contacts.map(({ id, name, email }) => (
+        <li key={id}>
+          <ContactItem name={name} email={email} />
         </li>
       ))}
     </ul>
-  );
+  )
 }
 
-export default App;
+type ContactItemProps = {
+  name: string
+  email: string
+}
+
+function ContactItem({ name, email }: ContactItemProps) {
+  const [color, setColor] = useState("blue")
+
+  const handleClick = () => {
+    console.log("clicked")
+
+    if (color === "red") {
+      setColor("blue")
+    } else {
+      setColor("red")
+    }
+
+    // 拡張性と可読性の低い書き方
+    // if (color === "red") setColor("blue")
+    // else setColor("red")
+  }
+
+  return (
+    <div style={{ color: color }} onClick={handleClick}>
+      {name} | {email}
+    </div>
+  )
+}
+
+export default App
